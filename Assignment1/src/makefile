@@ -13,8 +13,7 @@ routes.o : routes.c
 
 changes.o : changes.c
 				$(CC) -c changes.c -lm
-				
-				
+						
 backup.o : backup.c
 				$(CC) -c backup.c -lm
 

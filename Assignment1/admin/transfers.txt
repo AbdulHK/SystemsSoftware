@@ -1,3 +1,5 @@
-/home/abdul/Downloads/change-tracker/website/dev/var/www/html/faketest
-/home/abdul/Downloads/change-tracker/website/dev/var/www/html/fakedocument.html
-/home/abdul/Downloads/change-tracker/website/dev/var/www/html/fakedocument2.html
+/home/abdul/Downloads/SystemsSoftware-master/Assignment1/website/dev/var/www/html/finaltest
+/home/abdul/Downloads/SystemsSoftware-master/Assignment1/website/dev/var/www/html/yay it works!
+/home/abdul/Downloads/SystemsSoftware-master/Assignment1/website/dev/var/www/html/fakedocument.html
+/home/abdul/Downloads/SystemsSoftware-master/Assignment1/website/dev/var/www/html/testNo2
+/home/abdul/Downloads/SystemsSoftware-master/Assignment1/website/dev/var/www/html/weirdbug
