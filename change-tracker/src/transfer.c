@@ -1,14 +1,4 @@
-/*
-  Authour: Alex Kiernan
-  Date: 16/03/17
-  
-  Desc: Module to find changed files for the previous 24 hours.
-    
-    1. Find the changed files using unix 'find'
-    2. Redirect 'find' output data to file
-    3. Open newly update file and store contents in array
-    4. Loop through array and copy each file to the live dir
-**/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -118,7 +108,7 @@ void get_transfers() {
       mq_send(mq, "transfer_success", 1024, 0);
       mq_close(mq);
       
-      openlog("change_tracker", LOG_PID|LOG_CONS, LOG_USER);
+      openlog("Change_tracker", LOG_PID|LOG_CONS, LOG_USER);
       syslog(LOG_INFO, "Transfer success");
       closelog();
     } else {
@@ -128,7 +118,7 @@ void get_transfers() {
       mq_send(mq, "transfer_failure", 1024, 0);
       mq_close(mq);
       
-      openlog("change_tracker", LOG_PID|LOG_CONS, LOG_USER);
+      openlog("Change_tracker", LOG_PID|LOG_CONS, LOG_USER);
       syslog(LOG_INFO, "Transfer failure");
       closelog();
     }

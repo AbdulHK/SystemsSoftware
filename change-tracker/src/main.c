@@ -1,14 +1,4 @@
-/*
-  Authour: Alex Kiernan
-  Date: 14/03/17
-  
-  Desc: Manager for website change tracker. 
-    
-    1. Create daemon
-    2. Every second, check if correct time to execute backup/transfer, else
-       check for changes to dev
-    3. Register signals to accept user invocation
-**/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -23,6 +13,9 @@
 #include "transfer.h"
 #include "queue.h"
 
+//constructor is used to handle the time and when the backup should happen automaticlly
+//
+
 void signal_handler(int sig_no);
 void lock_dir();
 void unlock_dir();
@@ -34,7 +27,7 @@ int main() {
   if (pid > 0) {
     exit(EXIT_SUCCESS);
   } else if (pid == 0) {
-    openlog("change_tracker", LOG_PID|LOG_CONS, LOG_USER);
+    openlog("Assignment1", LOG_PID|LOG_CONS, LOG_USER);
     syslog(LOG_INFO, "Started change tracker process");
     closelog();
 
@@ -55,7 +48,6 @@ int main() {
   
     queue();
   
-    // Create target time struct
     time_t now;
     struct tm midnight;
     double seconds;
@@ -68,14 +60,14 @@ int main() {
     
     // Register SIGINT to kernel
     if (signal(SIGINT, signal_handler) == SIG_ERR) {
-      openlog("change_tracker", LOG_PID|LOG_CONS, LOG_USER);
+      openlog("Assignment1", LOG_PID|LOG_CONS, LOG_USER);
       syslog(LOG_INFO, "SIGINT catch error");
       closelog();
     }
     
     // Register SIGUSR1 to kernel
     if (signal(SIGUSR1, signal_handler) == SIG_ERR) {
-      openlog("change_tracker", LOG_PID|LOG_CONS, LOG_USER);
+      openlog("Assignment1", LOG_PID|LOG_CONS, LOG_USER);
       syslog(LOG_INFO, "SIGUSR1 catch error");
       closelog();
     }
@@ -83,13 +75,15 @@ int main() {
     while(1) {
       time(&now);
       seconds = difftime(now, mktime(&midnight));
-      if (seconds == 0) {      
+      if (seconds == 0) {  
+      //at midnight call the functions    
         lock_dir();
         backup();
         transfer();
         unlock_dir();
       } else {
-        dev_tracker();
+        //otherwise run dev__tracker
+        changes();
       } 
       sleep(1);
     }
@@ -100,14 +94,14 @@ int main() {
 
 void signal_handler(int sig_no) {
   if (sig_no == SIGINT) {
-    openlog("change_tracker", LOG_PID|LOG_CONS, LOG_USER);
+    openlog("Assignment1", LOG_PID|LOG_CONS, LOG_USER);
     syslog(LOG_INFO, "SIGINT interrupt recieved");
     closelog();
   } else if (sig_no == SIGUSR1) {
-    openlog("change_tracker", LOG_PID|LOG_CONS, LOG_USER);
+    openlog("Assignment1", LOG_PID|LOG_CONS, LOG_USER);
     syslog(LOG_INFO, "SIGUSR1 interrupt recieved");
     closelog();
-    
+    //call the functions when the user sends a SIGUSR signal
     lock_dir();
     backup();
     transfer();
@@ -115,31 +109,31 @@ void signal_handler(int sig_no) {
   }
 }
 
-
+//locks after update
 void lock_dir() {
   char mode[4] = "0555";
   int i = strtol(mode, 0, 8);
   
   if (chmod(dev_dir, i) == 0) {
-    openlog("change_tracker", LOG_PID|LOG_CONS, LOG_USER);
+    openlog("Assignment1", LOG_PID|LOG_CONS, LOG_USER);
     syslog(LOG_INFO, "Directory locked");
     closelog();
   } else {
-    openlog("change_tracker", LOG_PID|LOG_CONS, LOG_USER);
+    openlog("Assignment1", LOG_PID|LOG_CONS, LOG_USER);
     syslog(LOG_INFO, "Error locking directory");
     closelog();
   }
 }
-
+//unlocks directoy after update and backup is done.
 void unlock_dir() {
   char mode[4] = "0777";
   int i = strtol(mode, 0, 8);
   if (chmod(dev_dir, i) == 0) {
-    openlog("change_tracker", LOG_PID|LOG_CONS, LOG_USER);
+    openlog("Assignment1", LOG_PID|LOG_CONS, LOG_USER);
     syslog(LOG_INFO, "Directory unlocked");
     closelog();
   } else {
-    openlog("change_tracker", LOG_PID|LOG_CONS, LOG_USER);
+    openlog("Assignment1", LOG_PID|LOG_CONS, LOG_USER);
     syslog(LOG_INFO, "Error unlocking directory");
     closelog();
   }

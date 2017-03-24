@@ -22,7 +22,7 @@ int pipefd2[2];
 
 void get_changes();
 
-void dev_tracker() {
+void changes() {
   int fd;
   
   int saved_stdout = dup(STDOUT_FILENO);
@@ -52,8 +52,8 @@ void get_changes() {
 
   // fork (find)
   if ((pid = fork()) == -1) {
-    openlog("change_tracker", LOG_PID|LOG_CONS, LOG_USER);
-    syslog(LOG_INFO, "dev_tracker: Error find fork");
+    openlog("tracker", LOG_PID|LOG_CONS, LOG_USER);
+    syslog(LOG_INFO, "changes: Error find fork");
     closelog();
     
     perror("Error find fork");
@@ -81,8 +81,8 @@ void get_changes() {
 
   // fork (awk)
   if ((pid = fork()) == -1) {
-    openlog("change_tracker", LOG_PID|LOG_CONS, LOG_USER);
-    syslog(LOG_INFO, "dev_tracker: Error awk fork");
+    openlog("tracker", LOG_PID|LOG_CONS, LOG_USER);
+    syslog(LOG_INFO, "changes: Error awk fork");
     closelog();
     
     perror("Error awk fork");
@@ -114,8 +114,8 @@ void get_changes() {
 
   // fork (sort)
   if ((pid = fork()) == -1) {
-    openlog("change_tracker", LOG_PID|LOG_CONS, LOG_USER);
-    syslog(LOG_INFO, "dev_tracker: Error sort fork");
+    openlog("tracker", LOG_PID|LOG_CONS, LOG_USER);
+    syslog(LOG_INFO, "changes: Error sort fork");
     closelog();
     
     perror("Error sort fork");

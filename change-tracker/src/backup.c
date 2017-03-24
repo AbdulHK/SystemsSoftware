@@ -1,10 +1,4 @@
-/*
-  Authour: Alex Kiernan
-  Date: 14/03/17
-  
-  Desc: Module responsible for backing up live dir. Names backup dir as 
-        timestamp.
-**/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -44,7 +38,7 @@ void backup() {
   if ((pid = fork()) == -1) {
     perror("Error cp fork");
     
-    openlog("change_tracker", LOG_PID|LOG_CONS, LOG_USER);
+    openlog("backup_tracker", LOG_PID|LOG_CONS, LOG_USER);
     syslog(LOG_INFO, "Backup error");
     closelog();
     
@@ -69,7 +63,7 @@ void backup() {
       mq_close(mq);
       
       
-      openlog("change_tracker", LOG_PID|LOG_CONS, LOG_USER);
+      openlog("backup_tracker", LOG_PID|LOG_CONS, LOG_USER);
       syslog(LOG_INFO, "Backup success");
       closelog();
     } else {
@@ -79,7 +73,7 @@ void backup() {
       mq_send(mq, "backup_failure", 1024, 0);
       mq_close(mq);
       
-      openlog("change_tracker", LOG_PID|LOG_CONS, LOG_USER);
+      openlog("backup_tracker", LOG_PID|LOG_CONS, LOG_USER);
       syslog(LOG_INFO, "Backup failure");
       closelog();
     }

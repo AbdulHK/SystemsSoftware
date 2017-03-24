@@ -42,7 +42,7 @@ int queue() {
 
     mq = mq_open(QUEUE_NAME, O_CREAT | O_RDONLY, 0644, &queue_attributes);
     
-    openlog("change_tracker", LOG_PID|LOG_CONS, LOG_USER);
+    openlog("Change_tracker", LOG_PID|LOG_CONS, LOG_USER);
     syslog(LOG_INFO, "Started queue process");
     closelog(); 
     
@@ -56,7 +56,7 @@ int queue() {
         terminate = 1;
       }
       else {
-        openlog("change_tracker", LOG_PID|LOG_CONS, LOG_USER);
+        openlog("Change_tracker", LOG_PID|LOG_CONS, LOG_USER);
         syslog(LOG_INFO, "Recieved: %s\n", buffer);
         closelog(); 
       }
