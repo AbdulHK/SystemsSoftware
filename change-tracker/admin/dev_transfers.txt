@@ -1,2 +1,0 @@
-/home/abdul/Downloads/change-tracker/website/dev/var/www/html/fakedocument.html
-/home/abdul/Downloads/change-tracker/website/dev/var/www/html/.gitignore

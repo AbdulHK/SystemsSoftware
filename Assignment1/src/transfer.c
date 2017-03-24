@@ -16,10 +16,10 @@ void get_transfers();
 
 void transfer() {
   get_transfers();
-  // Sleep to allow above function to finish
+  // stop process for a while to run this function
   sleep(5);
   
-  // Create local versions of file path constants to nullify warning
+  // debug: bug appeard when using the global versions.
   char local_transfers_dir[100];
   strcpy(local_transfers_dir, transfers_dir);
   
@@ -39,7 +39,6 @@ void transfer() {
   
   char records[10][100];
   
-  // Store contents of file in array
   while(fscanf(fp, "%s", records[i]) != EOF) {
     i++;
   }
@@ -48,7 +47,7 @@ void transfer() {
   
   num_lines = i;
   
-  // Loop through each element of the array and copy file to live dir
+  //copy data
   for (int i = 0; i < num_lines; i++) {
     pid_t pid = fork();
     if (pid == 0) {
@@ -61,7 +60,7 @@ void transfer() {
   }
 }
 
-// Get the changed files using unix 'find' and store them to a file
+// use "find" to get changes
 void get_transfers() {
   int pid;
   int pipefd[2];
@@ -70,23 +69,20 @@ void get_transfers() {
 
   FILE *file = fopen(transfers_dir, "w");
   
-  // Get file descriptor for pointer
   fd = fileno(file);
   
-  // Redirect stdout to file in order to print exec find data
   dup2(fd,STDOUT_FILENO);
   close(fd);
   
   pipe(pipefd);
 
-  // fork (find)
+  
   if ((pid = fork()) == -1) {
     perror("Error find fork");
     exit(1);
   } else if (pid == 0) {
     close(pipefd[0]);
     close(pipefd[1]);
-    // exec find
     execlp("find", "find", dev_html_dir, "-mtime", "-1", "-type", "f", NULL);
 
     perror("Error with ls -al");
@@ -96,12 +92,13 @@ void get_transfers() {
     pid = wait(&status);
     
     close(pipefd[1]);
-    // Read exec output and print to stdout (redirects to file)
+    
     int nbytes = read(pipefd[0], data, sizeof(data));
     printf("%.*s", nbytes, data);
     close(pipefd[0]);
     
     if (WIFEXITED(status)) {
+      //get queue
       mqd_t mq;
       char buffer[1024];
       mq = mq_open(QUEUE_NAME, O_WRONLY);

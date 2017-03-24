@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -14,7 +13,7 @@
 #include "queue.h"
 
 //constructor is used to handle the time and when the backup should happen automaticlly
-//
+//signal handler waits for the user to issue a SIGUSR1 command.
 
 void signal_handler(int sig_no);
 void lock_dir();
@@ -58,14 +57,14 @@ int main() {
     midnight.tm_min = 0; 
     midnight.tm_sec = 0;
     
-    // Register SIGINT to kernel
+    // add the signal handler
     if (signal(SIGINT, signal_handler) == SIG_ERR) {
       openlog("Assignment1", LOG_PID|LOG_CONS, LOG_USER);
       syslog(LOG_INFO, "SIGINT catch error");
       closelog();
     }
     
-    // Register SIGUSR1 to kernel
+    // adding sigusr1.
     if (signal(SIGUSR1, signal_handler) == SIG_ERR) {
       openlog("Assignment1", LOG_PID|LOG_CONS, LOG_USER);
       syslog(LOG_INFO, "SIGUSR1 catch error");
@@ -82,7 +81,7 @@ int main() {
         transfer();
         unlock_dir();
       } else {
-        //otherwise run dev__tracker
+        //otherwise run changes()
         changes();
       } 
       sleep(1);
@@ -92,6 +91,7 @@ int main() {
   return 0;
 }
 
+    //call the functions when the user sends a SIGUSR signal
 void signal_handler(int sig_no) {
   if (sig_no == SIGINT) {
     openlog("Assignment1", LOG_PID|LOG_CONS, LOG_USER);
@@ -101,7 +101,7 @@ void signal_handler(int sig_no) {
     openlog("Assignment1", LOG_PID|LOG_CONS, LOG_USER);
     syslog(LOG_INFO, "SIGUSR1 interrupt recieved");
     closelog();
-    //call the functions when the user sends a SIGUSR signal
+    //call functions
     lock_dir();
     backup();
     transfer();

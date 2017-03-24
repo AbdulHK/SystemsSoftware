@@ -22,19 +22,17 @@ void backup() {
   
   char local_backup_dir[100];
   strcpy(local_backup_dir, backup_dir);
-
+  //getting time and creating the dir file
   t = time(NULL);
   tm = localtime(&t);
   
-  // Get a string timestamp
   strftime(str_timestamp, sizeof(str_timestamp), "%Y%m%d%H%M%S", tm);
   
-  // Create a new backup dir with name of timestamp
   strcat(local_backup_dir,str_timestamp );
   
   pid_t pid;
   
-  // fork (cp)
+  // fork the command cp
   if ((pid = fork()) == -1) {
     perror("Error cp fork");
     
@@ -55,7 +53,7 @@ void backup() {
     int status;
     pid = wait(&status);
     if (WIFEXITED(status)) {
-      // Connect to queue as client
+      // queue
       mqd_t mq;
       char buffer[1024];
       mq = mq_open(QUEUE_NAME, O_WRONLY);

@@ -12,7 +12,7 @@
 int queue() {
   int pid = fork();
 
-  if (pid > 0) { // Allow parent to run
+  if (pid > 0) {
   } else if (pid == 0) {
 
     if (setsid() < 0) {
